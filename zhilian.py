@@ -17,12 +17,13 @@ import csv
 import pickle
 import hashlib
 import os
+import datetime
 from lxml import etree
 from log import logger
 
-city_names = ['深圳','广州']
-job_names = ['数据分析','软件测试']
-
+city_names = ['深圳']
+job_names = ['软件测试']
+output_path = 'output'
 
 def load_progress( path):
     '''
@@ -204,12 +205,14 @@ def save_csv(csv_filename,data):
         f_csv.writerow(data)
 
 def main():
+    if not os.path.exists(output_path):
+        os.mkdir(output_path)
     for jobname in job_names:
         for cityname in city_names:
             logger.info('*'*10+'start spider '+'jobname:'+jobname+'city:'+cityname+'*'*10)
             total_page = get_page_nums(cityname,jobname)
             old_url = load_progress('old_url.txt')
-            csv_filename='{0}_{1}.csv'.format(jobname,cityname)
+            csv_filename=output_path+'/{0}_{1}.csv'.format(jobname,cityname)
             if not os.path.exists(csv_filename):
                 write_csv_headers(csv_filename)
             for i in range(int(total_page)):
@@ -220,4 +223,9 @@ def main():
             save_progress(old_url,'old_url.txt')
             logger.info('*'*10+'jobname:'+jobname+'city:'+cityname+' spider finished!'+'*'*10)
 if __name__=='__main__':
+    start_time = datetime.datetime.now()
+    logger.info('*'*20+"start running spider!"+'*'*20)
     main()
+    end_time = datetime.datetime.now()
+    logger.info('*'*20+"spider finished!Running time:%s"%(start_time-end_time) + '*'*20)
+    print("Running time:%s"%(start_time-end_time))

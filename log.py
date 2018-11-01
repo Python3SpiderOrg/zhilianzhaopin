@@ -26,6 +26,8 @@ class Logger:
         pattern='%(asctime)s - %(levelname)s - %(message)s'
         self.formatter = logging.Formatter(pattern)
         # 日志路径
+        if not os.path.exists('log'):
+            os.mkdir('log')
         self.log_path = os.path.join(os.getcwd(),'log')
 
 
